@@ -122,19 +122,27 @@ namespace GameJolt.API.Objects
 			parameters.Add("user_token", Token.ToLower());
 
 			Core.Request.Get(Constants.API_USERS_AUTH, parameters, (Core.Response response) => {
-				IsAuthenticated = response.success;
-
-				if (response.success)
-				{
-					Manager.Instance.CurrentUser = this;
-					Get();
-				}
-				
-				if (callback != null)
-				{
-					callback(response.success);
-				}
-			}, false);
+			        IsAuthenticated = response.success;
+			
+			        if (response.success)
+			        {
+			            Manager.Instance.CurrentUser = this;
+			            Get((user)=>{
+			                if (callback != null)
+			                {
+			                    callback(response.success);
+			                }
+			            });
+			        }
+			        else
+			        {
+			            if (callback != null)
+			            {
+			                callback(response.success);
+			            }
+			        }               
+			
+			    }, false);
 		}
 
 		public void SignOut()
